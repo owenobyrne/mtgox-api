@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_10;
+import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
 
 /** This example demonstrates how to create a websocket connection to a server. Only the most important callbacks are overloaded. */
@@ -44,9 +44,9 @@ public class TestStream extends WebSocketClient {
 	}
 
 	public static void main( String[] args ) throws URISyntaxException {
-		TestStream c = new TestStream( new URI( "ws://websocket.mtgox.com:80/mtgox?Currency=EUR" ), new Draft_10() ); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
+		TestStream c = new TestStream( new URI( "ws://localhost:8080/bitcoin-arbitrage/feeds/howya" ), new Draft_17() ); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
 		c.connect();
-		c.send("{\"op\": \"mtgox.subscribe\",\"type\": \"depth\"}");
+		//c.send("{\"op\": \"mtgox.subscribe\",\"type\": \"depth\"}");
 	}
 
 }

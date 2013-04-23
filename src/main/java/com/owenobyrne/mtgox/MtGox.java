@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import com.owenobyrne.mtgox.api.model.Info;
 import com.owenobyrne.mtgox.api.model.Order;
 import com.owenobyrne.mtgox.api.model.Quote;
+import com.owenobyrne.mtgox.api.model.TradeResult;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
@@ -51,6 +52,20 @@ public class MtGox {
         
         logger.info(""+ i.getData().getWallets().get("BTC").getBalance().getDisplay());
         return i;
+	}
+
+	
+	public TradeResult getTradeResult(String type, String orderId) throws Exception {
+
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add("nonce", String.valueOf(System.nanoTime()*1000)); // need the *1000 to make this nonce bigger than any other I ever used on this API
+        formData.add("type", type);
+        formData.add("order", orderId);
+        
+        ClientResponse response = doGet("BTCEUR/money/order/result", formData);
+        
+        TradeResult tr = response.getEntity(new GenericType<TradeResult>(){});
+        return tr;
 	}
 	
 	public Quote getQuote(String type) throws Exception {
