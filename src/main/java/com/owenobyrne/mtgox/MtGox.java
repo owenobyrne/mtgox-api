@@ -38,67 +38,139 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 public class MtGox {
 	static final Logger logger = Logger.getLogger(MtGox.class.getName());
 	private String apiEndpoint = "https://data.mtgox.com/api/2/";
-	private @Value("${apikey}") String apiKey;
-	private @Value("${apisecret}") String apiSecret;
-		
-	public Info getInfo() throws Exception {
+	private @Value("${apikey}")
+	String apiKey;
+	private @Value("${apisecret}")
+	String apiSecret;
 
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("nonce", String.valueOf(System.nanoTime()*1000)); // need the *1000 to make this nonce bigger than any other I ever used on this API
-        
-        ClientResponse response = doGet("money/info", formData);
-        
-        Info i = response.getEntity(new GenericType<Info>(){});
-        
-        logger.info(""+ i.getData().getWallets().get("BTC").getBalance().getDisplay());
-        return i;
+	public Info getInfo() throws MtGoxException {
+
+		MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+		formData.add("nonce", String.valueOf(System.nanoTime() * 1000)); // need
+																			// the
+																			// *1000
+																			// to
+																			// make
+																			// this
+																			// nonce
+																			// bigger
+																			// than
+																			// any
+																			// other
+																			// I
+																			// ever
+																			// used
+																			// on
+																			// this
+																			// API
+
+		ClientResponse response = doGet("money/info", formData);
+
+		Info i = response.getEntity(new GenericType<Info>() {
+		});
+
+		logger.info(""
+				+ i.getData().getWallets().get("BTC").getBalance().getDisplay());
+		return i;
 	}
 
-	
-	public TradeResult getTradeResult(String type, String orderId) throws Exception {
+	public TradeResult getTradeResult(String type, String orderId)
+			throws MtGoxException {
 
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("nonce", String.valueOf(System.nanoTime()*1000)); // need the *1000 to make this nonce bigger than any other I ever used on this API
-        formData.add("type", type);
-        formData.add("order", orderId);
-        
-        ClientResponse response = doGet("BTCEUR/money/order/result", formData);
-        
-        TradeResult tr = response.getEntity(new GenericType<TradeResult>(){});
-        return tr;
-	}
-	
-	public Quote getQuote(String type) throws Exception {
+		MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+		formData.add("nonce", String.valueOf(System.nanoTime() * 1000)); // need
+																			// the
+																			// *1000
+																			// to
+																			// make
+																			// this
+																			// nonce
+																			// bigger
+																			// than
+																			// any
+																			// other
+																			// I
+																			// ever
+																			// used
+																			// on
+																			// this
+																			// API
+		formData.add("type", type);
+		formData.add("order", orderId);
 
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("nonce", String.valueOf(System.nanoTime()*1000)); // need the *1000 to make this nonce bigger than any other I ever used on this API
-        formData.add("type", type);
-        formData.add("amount", "100000000");
-        
-        ClientResponse response = doGet("BTCEUR/money/order/quote", formData);
-        
-        Quote q = response.getEntity(new GenericType<Quote>(){});
-        logger.info(""+ q.getData().getAmount());
-        return q;
-	}
-	
-	public Order trade(String type, BigInteger amount) throws Exception {
+		ClientResponse response = doGet("BTCEUR/money/order/result", formData);
 
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("nonce", String.valueOf(System.nanoTime()*1000)); // need the *1000 to make this nonce bigger than any other I ever used on this API
-        formData.add("type", type);
-        formData.add("amount_int", "" + amount);
-        
-        ClientResponse response = doGet("BTCEUR/money/order/add", formData);
-        
-        Order o = response.getEntity(new GenericType<Order>(){});
-        logger.info(""+ o.getData());
-        return o;
+		TradeResult tr = response.getEntity(new GenericType<TradeResult>() {
+		});
+		return tr;
 	}
-	
-	public ClientResponse doGet(String endpoint, MultivaluedMap<String, String> formData) throws Exception {
+
+	public Quote getQuote(String type) throws MtGoxException {
+
+		MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+		formData.add("nonce", String.valueOf(System.nanoTime() * 1000)); // need
+																			// the
+																			// *1000
+																			// to
+																			// make
+																			// this
+																			// nonce
+																			// bigger
+																			// than
+																			// any
+																			// other
+																			// I
+																			// ever
+																			// used
+																			// on
+																			// this
+																			// API
+		formData.add("type", type);
+		formData.add("amount", "100000000");
+
+		ClientResponse response = doGet("BTCEUR/money/order/quote", formData);
+
+		Quote q = response.getEntity(new GenericType<Quote>() {
+		});
+		logger.info("" + q.getData().getAmount());
+		return q;
+	}
+
+	public Order trade(String type, BigInteger amount) throws MtGoxException {
+
+		MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+		formData.add("nonce", String.valueOf(System.nanoTime() * 1000)); // need
+																			// the
+																			// *1000
+																			// to
+																			// make
+																			// this
+																			// nonce
+																			// bigger
+																			// than
+																			// any
+																			// other
+																			// I
+																			// ever
+																			// used
+																			// on
+																			// this
+																			// API
+		formData.add("type", type);
+		formData.add("amount_int", "" + amount);
+
+		ClientResponse response = doGet("BTCEUR/money/order/add", formData);
+
+		Order o = response.getEntity(new GenericType<Order>() {
+		});
+		logger.info("" + o.getData());
+		return o;
+	}
+
+	public ClientResponse doGet(String endpoint,
+			MultivaluedMap<String, String> formData) throws MtGoxException {
 		logger.info("Testing " + apiKey);
-		
+
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -124,47 +196,68 @@ public class MtGox {
 
 			logger.log(Level.SEVERE, null, e);
 		}
-		
+
 		ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put("com.sun.jersey.api.json.POJOMappingFeature", Boolean.TRUE);
-        
-        Client client = Client.create(clientConfig);
-        
-        WebResource webResource = client.resource(apiEndpoint + endpoint);
-        webResource.addFilter(new com.sun.jersey.api.client.filter.LoggingFilter()); 
-        
-        ClientResponse response = (ClientResponse)webResource
-        		.accept(MediaType.APPLICATION_JSON_TYPE)
-        		.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
-        		.header("Rest-Key", apiKey)
-        		.header("Rest-Sign", signRequest(endpoint, formData))
-        		.post(ClientResponse.class, formData);
-            
-        if(response.getStatus() != 200)
-            throw new RuntimeException((new StringBuilder()).append("Failed : HTTP error code : ").append(response.getStatus()).toString());
-        
-        return response;
+		clientConfig.getFeatures().put(
+				"com.sun.jersey.api.json.POJOMappingFeature", Boolean.TRUE);
+
+		Client client = Client.create(clientConfig);
+
+		WebResource webResource = client.resource(apiEndpoint + endpoint);
+		webResource
+				.addFilter(new com.sun.jersey.api.client.filter.LoggingFilter());
+
+		ClientResponse response = (ClientResponse) webResource
+				.accept(MediaType.APPLICATION_JSON_TYPE)
+				.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+				.header("Rest-Key", apiKey)
+				.header("Rest-Sign", signRequest(endpoint, formData))
+				.post(ClientResponse.class, formData);
+
+		if (response.getStatus() != 200)
+			throw new MtGoxException((new StringBuilder())
+					.append("Failed : HTTP error code : ")
+					.append(response.getStatus()).toString());
+
+		return response;
 	}
-	
-	public String signRequest(String path, MultivaluedMap<String, String> formData) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-		SecretKey secretKey = new SecretKeySpec(Base64.decodeBase64(apiSecret.getBytes()), "HmacSHA512");
-        Mac mac = Mac.getInstance("HmacSHA512");
-        mac.init(secretKey);
-		
-		String result = new String();
-		for (String hashkey : formData.keySet()) {
-			if (result.length() > 0) {
-				result += '&';
+
+	public String signRequest(String path,
+			MultivaluedMap<String, String> formData) {
+		SecretKey secretKey = new SecretKeySpec(Base64.decodeBase64(apiSecret
+				.getBytes()), "HmacSHA512");
+		Mac mac;
+		try {
+			mac = Mac.getInstance("HmacSHA512");
+			mac.init(secretKey);
+
+			String result = new String();
+			for (String hashkey : formData.keySet()) {
+				if (result.length() > 0) {
+					result += '&';
+				}
+				result += URLEncoder.encode(hashkey, "UTF-8")
+						+ "="
+						+ URLEncoder.encode(formData.get(hashkey).get(0),
+								"UTF-8");
+
 			}
-			result += URLEncoder.encode(hashkey, "UTF-8") + "="
-					+ URLEncoder.encode(formData.get(hashkey).get(0), "UTF-8");
+			result = path + "\0" + result;
+			logger.info("To Sign: " + result);
 
+			mac.update(result.getBytes());
+			return Base64.encodeBase64String(mac.doFinal()).trim();
+			
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		result = path + "\0" + result;
-		logger.info("To Sign: " + result);
-
-		mac.update(result.getBytes());
-	    return Base64.encodeBase64String(mac.doFinal()).trim();
-		
+		return "";
 	}
 }
